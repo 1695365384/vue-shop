@@ -1,0 +1,45 @@
+body,
+html {
+    padding: 0;
+    margin: 0;  
+    max-width: 1920px;
+    min-width: 1200px;
+}
+
+.w {
+    width: 1200px;
+    margin: 0 auto;
+
+}
+
+.fl {
+    float: left;
+}
+
+.fr {
+    float: right;
+}
+
+.clearfix::after,
+.clearfix::before {
+    display: table;
+    content:'';
+
+}
+
+.clearfix::after {
+    clear:both;
+}
+
+li {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+img {
+    display: block;
+    height: 100%;
+}
