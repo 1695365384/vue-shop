@@ -1,10 +1,10 @@
 <template>
-  <div>el</div>
+  <div></div>
 </template>
 
 <script>
 export default {
-  name: 'login',
+  name: 'index',
   data() {
     return {}
   }
