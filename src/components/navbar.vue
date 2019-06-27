@@ -2,9 +2,9 @@
   <div>
     <div class="navbar">
       <div class="clearfix">
-        <el-button type="info" class="fr">退出</el-button>
+        <el-button type="info" class="fr" @click="open">退出</el-button>
         <a href="/" class="fl">
-          <img src="../assets/logo.png" />
+          <img src="../assets/logo.png">
         </a>
       </div>
     </div>
@@ -26,11 +26,23 @@
 </style>
 
 <script>
+import { removUserInfo } from '@/assets/js/userInfo'
 export default {
-  name: "Navbar",
+  name: 'Navbar',
   data() {
-    return {};
+    return {}
   },
-  methods: {}
-};
+  methods: {
+    open() {
+      this.$confirm('确定要退出登陆吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        removUserInfo()
+        this.$router.push('/')
+      })
+    }
+  }
+}
 </script>

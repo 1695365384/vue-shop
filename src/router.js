@@ -32,7 +32,7 @@ const routerLink = new Router({
           path: "/user",
           name: "user",
           meta: {
-            title: "用户角色管理"
+            title: "用户角色管理",
           },
           component: () => {
             return import("./views/indexChild/user.vue");

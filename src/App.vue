@@ -19,12 +19,15 @@
 .el-row {
   width: 100%;
   height: 100%;
+  .el-col {
+    height: 100%;
+  }
 }
 </style>
 
 <script>
 export default {
-  name: "App",
+  name: 'App',
   components: {}
-};
+}
 </script>

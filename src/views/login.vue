@@ -109,7 +109,7 @@ export default {
       if (status === 200) {
         saveInfo(res.data.data.token)
 
-        this.$router.push('/index')
+        this.$router.push('/user')
       } else {
         return this.$message(msg)
       }
