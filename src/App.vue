@@ -5,10 +5,20 @@
     </el-container>
   </div>
 </template>
+<style lang="less">
+#app {
+  height: 100%;
+  width: 100%;
+  .el-container {
+    height: 100%;
+    width: 100%;
+  }
+}
+</style>
 
 <script>
 export default {
-  name: 'app',
+  name: 'App',
   components: {}
 }
 </script>

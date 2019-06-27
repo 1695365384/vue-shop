@@ -2,24 +2,31 @@
   <div>
     <div class="login">
       <el-form
+        ref="ruleForm2"
         :model="ruleForm2"
         status-icon
         :rules="rules2"
-        ref="ruleForm2"
         label-width="100px"
         class="demo-ruleForm"
       >
-        <el-form-item label="密码" prop="pass">
-          <el-input type="password" v-model="ruleForm2.pass" auto-complete="off"></el-input>
+        <el-form-item label="账号" prop="username">
+          <el-input
+            v-model="ruleForm2.username"
+            type="text"
+            placeholder="请输入用户名"
+            auto-complete="off"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="确认密码" prop="checkPass">
-          <el-input type="password" v-model="ruleForm2.checkPass" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="年龄" prop="age">
-          <el-input v-model.number="ruleForm2.age"></el-input>
+        <el-form-item label="密码" prop="password">
+          <el-input
+            v-model="ruleForm2.password"
+            type="password"
+            placeholder="请输入密码"
+            auto-complete="off"
+          ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submitForm('ruleForm2')">提交</el-button>
+          <el-button type="primary" @click="login">提交</el-button>
           <el-button @click="resetForm('ruleForm2')">重置</el-button>
         </el-form-item>
       </el-form>
@@ -39,8 +46,8 @@
   box-shadow: 0 5px 25px #000;
   border-radius: 25px;
   .el-form {
-    width: 300px;
-    height: 300px;
+    width: 350px;
+    height: 250px;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -49,55 +56,33 @@
 }
 </style>
 
-
 <script>
+import { saveInfo } from '@/assets/js/userInfo'
+import { setInterval } from 'timers'
 export default {
   data() {
-    var checkAge = (rule, value, callback) => {
+    var validateName = (rule, value, callback) => {
       if (!value) {
-        return callback(new Error('年龄不能为空'))
+        return callback(new Error('用户名不能为空'))
       }
-      setTimeout(() => {
-        if (!Number.isInteger(value)) {
-          callback(new Error('请输入数字值'))
-        } else {
-          if (value < 18) {
-            callback(new Error('必须年满18岁'))
-          } else {
-            callback()
-          }
-        }
-      }, 1000)
+      callback()
     }
     var validatePass = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入密码'))
       } else {
-        if (this.ruleForm2.checkPass !== '') {
-          this.$refs.ruleForm2.validateField('checkPass')
-        }
         callback()
       }
     }
-    var validatePass2 = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请再次输入密码'))
-      } else if (value !== this.ruleForm2.pass) {
-        callback(new Error('两次输入密码不一致!'))
-      } else {
-        callback()
-      }
-    }
+
     return {
       ruleForm2: {
-        pass: '',
-        checkPass: '',
-        age: ''
+        username: '',
+        password: ''
       },
       rules2: {
-        pass: [{ validator: validatePass, trigger: 'blur' }],
-        checkPass: [{ validator: validatePass2, trigger: 'blur' }],
-        age: [{ validator: checkAge, trigger: 'blur' }]
+        username: [{ validator: validateName, trigger: 'blur' }],
+        password: [{ validator: validatePass, trigger: 'blur' }]
       }
     }
   },
@@ -105,17 +90,36 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          alert('submit!')
+          this.login()
         } else {
-          console.log('error submit!!')
-          return false
+          this.resetForm('ruleForm2')
+          return this.$message({
+            type: 'info',
+            message: `账号或者密码输入格式不正确`
+          })
         }
       })
     },
     resetForm(formName) {
       this.$refs[formName].resetFields()
+    },
+
+    async login() {
+      const res = await this.$http.post('/login', this.ruleForm2)
+      let loginStatus = res.data.meta.status
+      let msg = res.data.meta.msg
+      if (loginStatus === 200) {
+        saveInfo(res.data.data)
+        const { redirect } = this.$route.query
+        if (redirect) {
+          this.$router.push(redirect.substr(1))
+        } else {
+          this.$router.push('/index')
+        }
+      } else {
+        return this.$message(msg)
+      }
     }
   }
 }
 </script>
-
