@@ -1,9 +1,11 @@
 <template>
-  <div id="app">
-    <el-container>
-      <router-view></router-view>
-    </el-container>
-  </div>
+  <el-row>
+    <el-col>
+      <div id="app">
+        <router-view></router-view>
+      </div>
+    </el-col>
+  </el-row>
 </template>
 <style lang="less">
 #app {
@@ -14,11 +16,15 @@
     width: 100%;
   }
 }
+.el-row {
+  width: 100%;
+  height: 100%;
+}
 </style>
 
 <script>
 export default {
-  name: 'App',
+  name: "App",
   components: {}
-}
+};
 </script>

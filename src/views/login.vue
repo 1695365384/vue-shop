@@ -58,7 +58,6 @@
 
 <script>
 import { saveInfo } from '@/assets/js/userInfo'
-import { setInterval } from 'timers'
 export default {
   data() {
     var validateName = (rule, value, callback) => {
@@ -106,16 +105,11 @@ export default {
 
     async login() {
       const res = await this.$http.post('/login', this.ruleForm2)
-      let loginStatus = res.data.meta.status
-      let msg = res.data.meta.msg
-      if (loginStatus === 200) {
-        saveInfo(res.data.data)
-        const { redirect } = this.$route.query
-        if (redirect) {
-          this.$router.push(redirect.substr(1))
-        } else {
-          this.$router.push('/index')
-        }
+      let { status, msg } = res.data.meta
+      if (status === 200) {
+        saveInfo(res.data.data.token)
+
+        this.$router.push('/index')
       } else {
         return this.$message(msg)
       }

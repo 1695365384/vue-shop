@@ -17,15 +17,14 @@ const routerLink = new Router({
       }
     },
 
-
     {
-      path: "/",
+      path: "/index",
       name: "index",
       meta: {
         title: "主页"
       },
       component: () => {
-        return import("./views/index.vue");
+        return import('./views/index.vue');
       },
 
       children: [
@@ -33,10 +32,10 @@ const routerLink = new Router({
           path: "/user",
           name: "user",
           meta: {
-            title: '用户角色管理'
+            title: "用户角色管理"
           },
           component: () => {
-            return import('./views/index/user.vue')
+            return import("./views/indexChild/user.vue");
           }
         }
       ]

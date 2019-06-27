@@ -4,7 +4,7 @@
       <div class="clearfix">
         <el-button type="info" class="fr">退出</el-button>
         <a href="/" class="fl">
-          <img src="../assets/logo.png">
+          <img src="../assets/logo.png" />
         </a>
       </div>
     </div>
@@ -27,10 +27,10 @@
 
 <script>
 export default {
-  name: 'Navbar',
+  name: "Navbar",
   data() {
-    return {}
+    return {};
   },
   methods: {}
-}
+};
 </script>
