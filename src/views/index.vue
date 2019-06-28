@@ -8,7 +8,7 @@
       <!-- Aside content -->
 
       <el-menu
-        default-active="2"
+        default-active="users"
         class="el-menu-vertical-demo"
         background-color="#545c64"
         text-color="#fff"
@@ -16,24 +16,12 @@
       >
         <el-submenu index="1">
           <template slot="title">
-            <i class="el-icon-setting"></i>
+            <i class></i>
             <span>管理系统</span>
           </template>
-          <el-menu-item index="2" default-active>
-            <i class="el-icon-user-solid"></i>
-            <span>用户管理</span>
-          </el-menu-item>
-          <el-menu-item index="3">
-            <i class="el-icon-copy-document"></i>
-            <span slot="title">商品管理</span>
-          </el-menu-item>
-          <el-menu-item index="4">
-            <i class="el-icon-key"></i>
-            <span slot="title">权限管理</span>
-          </el-menu-item>
-          <el-menu-item index="5">
-            <i class="el-icon-s-claim"></i>
-            <span slot="title">订单管理</span>
+          <el-menu-item v-for="(v,i) in authList" :key="v.id" :index="v.path">
+            <i :class="v.id==iconClassList[i].id?iconClassList[i].name:''"></i>
+            <span>{{v.authName}}</span>
           </el-menu-item>
         </el-submenu>
       </el-menu>
@@ -65,16 +53,33 @@
 <script>
 import navbar from '../components/navbar'
 export default {
-  name: 'index',
+  name: 'Index',
   components: {
     navbar
   },
   data() {
     return {
-      breadcrumbList: []
+      authList: [],
+      iconClassList: [
+        { id: 125, name: 'el-icon-user-solid' },
+        { id: 103, name: 'el-icon-key' },
+        { id: 101, name: 'el-icon-copy-document' },
+        { id: 102, name: 'el-icon-s-claim' },
+        { id: 145, name: 'el-icon-s-order' }
+      ]
     }
   },
 
-  created() {}
+  created() {
+    this.$http.get('/menus').then(res => {
+      this.authList = res.data.data
+    })
+  },
+
+  computed: {},
+
+  methods: {},
+
+  mounted() {}
 }
 </script>

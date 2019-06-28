@@ -107,9 +107,8 @@ export default {
       const res = await this.$http.post('/login', this.ruleForm2)
       let { status, msg } = res.data.meta
       if (status === 200) {
-        saveInfo(res.data.data.token)
-
-        this.$router.push('/user')
+        saveInfo(res.data.data)
+        this.$router.push('/users')
       } else {
         return this.$message(msg)
       }

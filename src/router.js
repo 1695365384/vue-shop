@@ -18,24 +18,24 @@ const routerLink = new Router({
     },
 
     {
-      path: "/index",
+      path: "/",
       name: "index",
       meta: {
         title: "主页"
       },
       component: () => {
-        return import('./views/index.vue');
+        return import("./views/index.vue");
       },
 
       children: [
         {
-          path: "/user",
-          name: "user",
+          path: "/users",
+          name: "users",
           meta: {
-            title: "用户角色管理",
+            title: "用户角色管理"
           },
           component: () => {
-            return import("./views/indexChild/user.vue");
+            return import("./views/indexChild/users.vue");
           }
         }
       ]

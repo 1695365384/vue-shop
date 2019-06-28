@@ -26,7 +26,7 @@ export function getUserInfo () {
 
 export function getToKen () {
   try {
-    return JSON.parse(getUserInfo());
+    return JSON.parse(getUserInfo()).token;
   } catch (err) {
     return "";
   }

@@ -3,7 +3,9 @@ import App from "./App.vue";
 import router from "./router";
 import "./plugins/element.js";
 import "./assets/css/base.css";
+import moment from 'vue-moment'
 
+Vue.use(moment)
 import httpPlugin from "@/assets/js/http";
 
 Vue.config.productionTip = false;
