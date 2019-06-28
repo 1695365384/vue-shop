@@ -12,16 +12,17 @@
         </el-breadcrumb>
       </el-col>
 
+      <!-- main里面的内容 -->
       <el-col>
         <div style="margin-top: 15px;">
           <el-input v-model="input" placeholder="请输入内容" class="input-with-select">
             <el-button slot="append" icon="el-icon-search"></el-button>
           </el-input>
-
-          <el-button type="success" size="medium" plain>添加用户</el-button>
+          <el-button type="success" size="medium" plain @click="addUser">添加用户</el-button>
         </div>
       </el-col>
 
+      <!-- 用户列表 -->
       <el-col>
         <el-card class="box-card" style="margin-top:25px;">
           <el-table :data="tableData" type="flex">
@@ -39,14 +40,62 @@
               </template>
             </el-table-column>
             <el-table-column prop="name" label="操作">
-              <el-button type="primary" icon="el-icon-edit" circle @click="editUser($event)"></el-button>
-              <el-button type="success" icon="el-icon-check" circle></el-button>
-              <el-button type="danger" icon="el-icon-delete" circle></el-button>
+              <template #default="edit">
+                <el-button type="primary" icon="el-icon-edit" circle @click="editUser(edit.row) "></el-button>
+                <el-button type="success" icon="el-icon-check" circle></el-button>
+                <el-button type="danger" icon="el-icon-delete" @click="delUser(edit)" circle></el-button>
+              </template>
             </el-table-column>
           </el-table>
         </el-card>
       </el-col>
     </el-row>
+
+    <!-- 编辑用户的模态框 -->
+    <el-dialog title="编辑用户" :visible.sync="dialogFormVisible">
+      <el-form :model="editUserFrom">
+        <el-form-item label="用户名">
+          <el-input v-model="editUserFrom.name" autocomplete="off" disabled></el-input>
+        </el-form-item>
+
+        <el-form-item label="邮箱">
+          <el-input v-model="editUserFrom.email" autocomplete="off"></el-input>
+        </el-form-item>
+
+        <el-form-item label="电话">
+          <el-input v-model="editUserFrom.mobile" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="subEditFrom">确 定</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 添加用户的模态框 -->
+    <el-dialog title="添加新的用户" :visible="addUserMode">
+      <el-form :model="addUserFrom" :rules="addUserRules">
+        <el-form-item label="用户名" prop="username" required label-width="120px">
+          <el-input v-model="addUserFrom.username" autocomplete="off" placeholder="请输入用户名"></el-input>
+        </el-form-item>
+
+        <el-form-item label="密码" prop="password" required label-width="120px">
+          <el-input v-model="addUserFrom.password" autocomplete="off" placeholder="请输入密码"></el-input>
+        </el-form-item>
+
+        <el-form-item label="手机号" prop="mobile" required label-width="120px">
+          <el-input v-model="addUserFrom.mobile" autocomplete="off" placeholder="请输入邮箱"></el-input>
+        </el-form-item>
+
+        <el-form-item label="邮箱" prop="email" required label-width="120px">
+          <el-input v-model="addUserFrom.email" autocomplete="off" placeholder="请输入电话"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="addUserMode = false">取 消</el-button>
+        <el-button type="primary" @click="addUserMode = false">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <style lang="less" scoped>
@@ -79,34 +128,60 @@ export default {
         }
       ],
 
-      value: true
+      dialogFormVisible: false,
+
+      editUserFrom: {
+        name: '',
+        email: '',
+        mobile: '',
+        id: ''
+      },
+
+      addUserFrom: {
+        username: '',
+        password: '',
+        mobile: '',
+        email: ''
+      },
+      addUserRules: {
+        username: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 6, max: 12, message: '长度在6到12个字符左右', trigger: 'blur' }
+        ],
+
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 6, message: '密码不能少于6位', trigger: 'blur' }
+        ],
+
+        email: [{ required: true, message: '请输入邮箱', trigger: 'blur' }],
+
+        mobile: [
+          { required: true, message: '手机号不能为空', trigger: 'blur' },
+          { min: 11, message: '请输入正确的手机号', trigger: 'blur' }
+        ]
+      },
+
+      addUserMode: false
     }
   },
 
   created() {
-    this.$http
-      .get('/users', { params: { pagenum: 1, pagesize: 100 } })
-      .then(res => {
-        let list = res.data.data.users
-        let obj = {}
-        let tabList = []
-        list.forEach((v, i) => {
-          tabList[i] = {
-            name: v.username,
-            email: v.email,
-            status: v.mg_state,
-            mobile: v.mobile,
-            id: v.id
-          }
-        })
-        this.tableData = tabList
-        console.log(tableData)
-      })
-      .catch(err => {})
+    this.render()
   },
 
   methods: {
-    editUser() {},
+    editUser(val) {
+      this.dialogFormVisible = true
+      let { id, name, mobile, email } = val
+      this.editUserFrom = {
+        name,
+        mobile,
+        email,
+        id
+      }
+    },
+
     async changeSwich(val) {
       let { id, status } = val
       let res = await this.$http.put(`users/${id}/state/${status}`)
@@ -118,7 +193,76 @@ export default {
           type: `${types}`
         })
       }
-      console.log()
+    },
+
+    async subEditFrom() {
+      this.dialogFormVisible = false
+      let { id } = this.editUserFrom
+      let res = await this.$http.put(`/users/${id}`, this.editUserFrom)
+
+      if (res.data.meta.status === 200) {
+        this.$message({
+          message: `更新用户信息成功`,
+          type: `success`
+        })
+      } else {
+        this.$message({
+          message: `更新用户信息失败,`,
+          type: `warning`
+        })
+      }
+
+      this.render()
+    },
+
+    delUser(val) {
+      let { id } = val.row
+      this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          this.$http.delete(`/users/${id}`).then(res => {
+            if (res.data.meta.status === 200) {
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              })
+            }
+          })
+          this.render()
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+    },
+
+    addUser() {
+      this.addUserMode = true
+    },
+
+    render() {
+      this.$http
+        .get('/users', { params: { pagenum: 1, pagesize: 100 } })
+        .then(res => {
+          let list = res.data.data.users
+          let obj = {}
+          let tabList = []
+          list.forEach((v, i) => {
+            tabList[i] = {
+              name: v.username,
+              email: v.email,
+              status: v.mg_state,
+              mobile: v.mobile,
+              id: v.id
+            }
+          })
+          this.tableData = tabList
+        })
     }
   }
 }
