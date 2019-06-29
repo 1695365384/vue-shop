@@ -42,7 +42,7 @@
             <el-table-column prop="name" label="操作">
               <template #default="edit">
                 <el-button type="primary" icon="el-icon-edit" circle @click="editUser(edit.row) "></el-button>
-                <el-button type="success" icon="el-icon-check" circle @click="Permission"></el-button>
+                <el-button type="success" icon="el-icon-check" circle @click="Permission(edit.row)"></el-button>
                 <el-button type="danger" icon="el-icon-delete" @click="delUser(edit)" circle></el-button>
               </template>
             </el-table-column>
@@ -110,17 +110,27 @@
 
     <!-- 分配角色的模态框 -->
 
-    <el-dialog title="分配用户的角色" :visible.sync="outerVisible">
-      <el-input v-model="input1" :disabled="true"></el-input>
-      <el-dropdown size="medium" split-button type="primary">
-        角色列表
-        <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item v-for=" v in PerUserList" :key="v">黄金糕</el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
+    <el-dialog title="分配用户的角色" :visible.sync="PerVisible">
+      <el-form :model="PerFrom">
+        <el-form-item>
+          <el-input v-model="PerFrom.PerUsername" :disabled="true"></el-input>
+        </el-form-item>
+
+        <el-form-item>
+          <el-select v-model="PerFrom.perSelet">
+            <el-option
+              v-for="item in PerFrom.PerUserList"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+
       <div slot="footer" class="dialog-footer">
-        <el-button @click="outerVisible = false">取 消</el-button>
-        <el-button type="primary" @click="innerVisible = true">打开内层 Dialog</el-button>
+        <el-button @click="PerVisible = false">取 消</el-button>
+        <el-button type="primary" @click="putPer">确定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -143,8 +153,14 @@ export default {
   data() {
     return {
       input: '',
-      PerUsername: '',
-      PerUserList: [],
+      PerFrom: {
+        perSelet: '',
+        PerUsername: '',
+        PerUserList: [],
+        PerUserId: ''
+      },
+
+      PerVisible: false,
       tableData: [
         {
           name: '',
@@ -320,7 +336,35 @@ export default {
       this.render()
     },
 
-    Permission() {}
+    async Permission(val) {
+      let res = await this.$http.get(`/users/${val.id}`)
+      let roles = await this.$http.get('/roles')
+      let { rid } = res.data.data
+      let list2 = roles.data.data
+      let roleName = list2.find(v => v.id == rid) || ''
+      this.PerFrom = {
+        PerUsername: val.name,
+        PerUserList: roles.data.data,
+        perSelet: roleName.roleName,
+        PerUserId: val.id
+      }
+      this.PerVisible = true
+    },
+
+    async putPer() {
+      this.PerVisible = false
+      let { PerUserId, perSelet } = this.PerFrom
+      let res = await this.$http.put(`/users/${PerUserId}/role`, {
+        rid: perSelet
+      })
+      let { meta } = res.data
+      if (meta.status === 200) {
+        this.$message({
+          type: 'success',
+          message: meta.msg
+        })
+      }
+    }
   },
 
   watch: {}
