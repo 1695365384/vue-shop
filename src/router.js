@@ -26,18 +26,51 @@ const routerLink = new Router({
       component: () => {
         return import("./views/index.vue");
       },
-
       children: [
         {
           path: "/users",
           name: "users",
           meta: {
-            title: "用户角色管理"
+            title: "用户列表"
           },
           component: () => {
             return import("./views/indexChild/users.vue");
           }
-        }
+        },
+
+        {
+          path: "/roles",
+          name: "roles",
+          meta: {
+            title: "角色列表"
+          },
+          component: () => {
+            return import("./views/indexChild/roles.vue");
+          }
+        },
+
+        {
+          path: "/rights",
+          name: "rights",
+          meta: {
+            title: "权限列表"
+          },
+          component: () => {
+            return import("./views/indexChild/rights.vue");
+          }
+        },
+
+        {
+          path: "/goods",
+          name: "goods",
+          meta: {
+            title: "商品列表"
+          },
+          component: () => {
+            return import("./views/indexChild/goods.vue");
+          }
+        },
+
       ]
     }
   ]

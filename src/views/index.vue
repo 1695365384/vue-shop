@@ -8,7 +8,6 @@
       <!-- Aside content -->
 
       <el-menu
-        default-active="users"
         class="el-menu-vertical-demo"
         background-color="#545c64"
         text-color="#fff"
