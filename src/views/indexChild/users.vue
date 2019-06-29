@@ -16,9 +16,9 @@
       <el-col>
         <div style="margin-top: 15px;">
           <el-input v-model="input" placeholder="请输入内容" class="input-with-select">
-            <el-button slot="append" icon="el-icon-search"></el-button>
+            <el-button slot="append" icon="el-icon-search" @click="searchInput"></el-button>
           </el-input>
-          <el-button type="success" size="medium" plain @click="addUser">添加用户</el-button>
+          <el-button type="success" size="medium" plain @click="addUserMode = true">添加用户</el-button>
         </div>
       </el-col>
 
@@ -42,7 +42,7 @@
             <el-table-column prop="name" label="操作">
               <template #default="edit">
                 <el-button type="primary" icon="el-icon-edit" circle @click="editUser(edit.row) "></el-button>
-                <el-button type="success" icon="el-icon-check" circle></el-button>
+                <el-button type="success" icon="el-icon-check" circle @click="Permission"></el-button>
                 <el-button type="danger" icon="el-icon-delete" @click="delUser(edit)" circle></el-button>
               </template>
             </el-table-column>
@@ -73,27 +73,54 @@
     </el-dialog>
 
     <!-- 添加用户的模态框 -->
-    <el-dialog title="添加新的用户" :visible="addUserMode">
-      <el-form :model="addUserFrom" :rules="addUserRules">
+    <el-dialog title="添加新的用户" :visible="addUserMode" :before-close="iconClose">
+      <el-form :model="addUserFrom" :rules="addUserRules" ref="addUserFroms" status-icon>
         <el-form-item label="用户名" prop="username" required label-width="120px">
           <el-input v-model="addUserFrom.username" autocomplete="off" placeholder="请输入用户名"></el-input>
         </el-form-item>
 
         <el-form-item label="密码" prop="password" required label-width="120px">
-          <el-input v-model="addUserFrom.password" autocomplete="off" placeholder="请输入密码"></el-input>
+          <el-input
+            v-model="addUserFrom.password"
+            type="password"
+            autocomplete="off"
+            placeholder="请输入密码"
+          ></el-input>
         </el-form-item>
 
         <el-form-item label="手机号" prop="mobile" required label-width="120px">
-          <el-input v-model="addUserFrom.mobile" autocomplete="off" placeholder="请输入邮箱"></el-input>
+          <el-input
+            v-model="addUserFrom.mobile"
+            type="phone"
+            autocomplete="off"
+            placeholder="请输入手机号"
+          ></el-input>
         </el-form-item>
 
         <el-form-item label="邮箱" prop="email" required label-width="120px">
-          <el-input v-model="addUserFrom.email" autocomplete="off" placeholder="请输入电话"></el-input>
+          <el-input v-model="addUserFrom.email" type="email" autocomplete="off" placeholder="请输入邮箱"></el-input>
         </el-form-item>
       </el-form>
+
       <div slot="footer" class="dialog-footer">
         <el-button @click="addUserMode = false">取 消</el-button>
-        <el-button type="primary" @click="addUserMode = false">确 定</el-button>
+        <el-button type="primary" @click="addUser('addUserFroms')">确 定</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 分配角色的模态框 -->
+
+    <el-dialog title="分配用户的角色" :visible.sync="outerVisible">
+      <el-input v-model="input1" :disabled="true"></el-input>
+      <el-dropdown size="medium" split-button type="primary">
+        角色列表
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item v-for=" v in PerUserList" :key="v">黄金糕</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="outerVisible = false">取 消</el-button>
+        <el-button type="primary" @click="innerVisible = true">打开内层 Dialog</el-button>
       </div>
     </el-dialog>
   </div>
@@ -111,13 +138,13 @@
 </style>
 
 <script>
-import moment from 'vue-moment'
-import { constants } from 'crypto'
 export default {
   name: 'users',
   data() {
     return {
       input: '',
+      PerUsername: '',
+      PerUserList: [],
       tableData: [
         {
           name: '',
@@ -241,13 +268,32 @@ export default {
         })
     },
 
-    addUser() {
+    addUser(add) {
       this.addUserMode = true
+      this.$refs[add].validate(valid => {
+        if (valid) {
+          this.$http.post('/users', this.addUserFrom).then(res => {
+            if (res.data.meta.status === 201) {
+              this.$refs['addUserFroms'].resetFields()
+              this.addUserMode = false
+              this.$message({
+                type: 'success',
+                message: '创建成功了,不要告诉别人呦'
+              })
+              this.render()
+            }
+          })
+        } else {
+          return
+        }
+      })
     },
 
     render() {
       this.$http
-        .get('/users', { params: { pagenum: 1, pagesize: 100 } })
+        .get('/users', {
+          params: { query: this.input, pagenum: 1, pagesize: 100 }
+        })
         .then(res => {
           let list = res.data.data.users
           let obj = {}
@@ -263,7 +309,20 @@ export default {
           })
           this.tableData = tabList
         })
-    }
-  }
+    },
+
+    iconClose(del) {
+      this.addUserMode = false
+      this.$refs['addUserFroms'].resetFields()
+    },
+
+    searchInput() {
+      this.render()
+    },
+
+    Permission() {}
+  },
+
+  watch: {}
 }
 </script>

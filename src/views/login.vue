@@ -108,7 +108,7 @@ export default {
       let { status, msg } = res.data.meta
       if (status === 200) {
         saveInfo(res.data.data)
-        this.$router.push('/users')
+        this.$router.push('/')
       } else {
         return this.$message(msg)
       }

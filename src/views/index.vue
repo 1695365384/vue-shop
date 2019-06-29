@@ -13,15 +13,18 @@
         background-color="#545c64"
         text-color="#fff"
         active-text-color="#ffd04b"
+        :router="true"
       >
-        <el-submenu index="1">
+        <el-submenu v-for="(v,i) in authList" :key="v.id" :index="v.path">
           <template slot="title">
-            <i class></i>
-            <span>管理系统</span>
-          </template>
-          <el-menu-item v-for="(v,i) in authList" :key="v.id" :index="v.path">
             <i :class="v.id==iconClassList[i].id?iconClassList[i].name:''"></i>
             <span>{{v.authName}}</span>
+          </template>
+
+          <el-menu-item v-for="val in v.children" :key="val.id" :index="val.path" :route="val.path">
+            <template slot="title">
+              <span>{{val.authName}}</span>
+            </template>
           </el-menu-item>
         </el-submenu>
       </el-menu>
@@ -66,13 +69,15 @@ export default {
         { id: 101, name: 'el-icon-copy-document' },
         { id: 102, name: 'el-icon-s-claim' },
         { id: 145, name: 'el-icon-s-order' }
-      ]
+      ],
+      authChild: []
     }
   },
 
   created() {
     this.$http.get('/menus').then(res => {
       this.authList = res.data.data
+      this.authChild = res.data.data.children
     })
   },
 
