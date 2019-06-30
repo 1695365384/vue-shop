@@ -84,17 +84,11 @@ export default {
     }
   },
 
-  computed: {},
-
   created() {
     this.$http.get('/menus').then(res => {
       this.authList = res.data.data
       this.authChild = res.data.data.children
     })
-  },
-
-  mounted() {},
-
-  methods: {}
+  }
 }
 </script>

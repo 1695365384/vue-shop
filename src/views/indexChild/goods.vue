@@ -72,35 +72,35 @@
           label-width="100px"
           class="demo-ruleForm"
         >
-          <el-form-item label="商品名称" prop="pass">
+          <el-form-item label="商品名称" prop="goods_name">
             <el-input type="text" v-model="addGoodsFrom.goods_name" autocomplete="off"></el-input>
           </el-form-item>
 
-          <el-form-item label="分类列表" prop="pass">
+          <el-form-item label="分类列表" prop="goods_cat">
             <el-input type="text" v-model="addGoodsFrom.goods_cat" autocomplete="off"></el-input>
           </el-form-item>
 
-          <el-form-item label="价格" prop="pass">
+          <el-form-item label="价格" prop="goods_price">
             <el-input type="text" v-model="addGoodsFrom.goods_price" autocomplete="off"></el-input>
           </el-form-item>
 
-          <el-form-item label="数量" prop="pass">
+          <el-form-item label="数量" prop="goods_number">
             <el-input type="text" v-model="addGoodsFrom.goods_number" autocomplete="off"></el-input>
           </el-form-item>
 
-          <el-form-item label="重量" prop="pass">
+          <el-form-item label="重量" prop="goods_weight">
             <el-input type="text" v-model="addGoodsFrom.goods_weight" autocomplete="off"></el-input>
           </el-form-item>
 
-          <el-form-item label="介绍" prop="pass">
+          <el-form-item label="介绍" prop="goods_introduce">
             <el-input type="text" v-model="addGoodsFrom.goods_introduce" autocomplete="off"></el-input>
           </el-form-item>
 
-          <el-form-item label="图片临时路径" prop="pass">
+          <el-form-item label="图片临时路径" prop="pics">
             <el-input type="text" v-model="addGoodsFrom.pics" autocomplete="off"></el-input>
           </el-form-item>
 
-          <el-form-item label="商品的参数" prop="pass">
+          <el-form-item label="商品的参数" prop="attrs">
             <el-input type="text" v-model="addGoodsFrom.attrs" autocomplete="off"></el-input>
           </el-form-item>
         </el-form>
@@ -136,7 +136,15 @@ export default {
       // 添加商品的数据
       addGoodsVisible: false,
       addGoodsFrom: [],
-      addGoodsrules: {}
+      addGoodsrules: {
+        goods_name: [
+          { required: true, message: '请输入商品名', trigger: 'blur' }
+        ],
+
+        goods_cat: [
+          { required: true, message: '请输入商品名', trigger: 'blur' }
+        ]
+      }
     }
   },
 

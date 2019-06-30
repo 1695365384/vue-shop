@@ -12,14 +12,7 @@
       <!-- 面包屑导航 -->
 
       <!-- 一个按钮 -->
-      <el-button
-        type="success"
-        size="medium"
-        plain
-        style="margin:25px 0;"
-        @click="addPart"
-        >添加角色</el-button
-      >
+      <el-button type="success" size="medium" plain style="margin:25px 0;" @click="addPart">添加角色</el-button>
       <!-- 一个按钮 -->
 
       <!-- 面板组件 -->
@@ -31,19 +24,9 @@
             <el-table-column property="roleDesc" label="描述"></el-table-column>
             <el-table-column label="操作">
               <template v-slot="tabData">
-                <el-button
-                  size="mini"
-                  type="primary"
-                  @click="editPart(tabData.row)"
-                  >编辑</el-button
-                >
-                <el-button size="mini" type="warning">授权</el-button>
-                <el-button
-                  size="mini"
-                  type="danger"
-                  @click="delPart(tabData.row.id)"
-                  >删除</el-button
-                >
+                <el-button size="mini" type="primary" @click="editPart(tabData.row)">编辑</el-button>
+                <el-button size="mini" type="warning" @click="warrant(tabData.row)">授权</el-button>
+                <el-button size="mini" type="danger" @click="delPart(tabData.row.id)">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -72,6 +55,24 @@
       <!-- 编辑角色的弹出框 -->
 
       <!-- 角色授权的树状结构 -->
+      <el-dialog title="角色授权编辑" :visible.sync="warrantVisible" width="30%">
+        <el-tree
+          :data="roleListData"
+          show-checkbox
+          default-expand-all
+          node-key="id"
+          ref="tree"
+          highlight-current
+          :props="warrantTree"
+          :default-checked-keys="warrantDefaultKeys"
+          @check="getCheckKey"
+        ></el-tree>
+
+        <span slot="footer">
+          <el-button @click="warrantVisible=false">取 消</el-button>
+          <el-button type="primary" @click="editWarrant">确 定</el-button>
+        </span>
+      </el-dialog>
 
       <!-- 角色授权的树状结构 -->
 
@@ -98,17 +99,17 @@
 
 <script>
 export default {
-  name: "Roles",
+  name: 'Roles',
   data() {
     return {
-      brandText: "",
+      brandText: '',
 
       // 渲染列表的数据
       tableData: [
         {
-          roleName: "",
-          roleDesc: "",
-          id: "",
+          roleName: '',
+          roleDesc: '',
+          id: '',
           children: []
         }
       ],
@@ -120,91 +121,152 @@ export default {
       // 添加角色的数据
       addPartVisible: false,
       addPartFrom: {
-        roleDesc: "",
-        roleName: ""
-      }
-    };
+        roleDesc: '',
+        roleName: ''
+      },
+
+      // 角色授权的数据
+      warrantVisible: false,
+      roleListData: [],
+      warrantTree: {
+        children: 'children',
+        label: 'authName'
+      },
+      warrantDefaultKeys: [],
+      warrantID: -1
+    }
   },
 
   created() {
-    this.brandText = document.title;
-    this.render();
+    this.brandText = document.title
+    this.render()
   },
 
   methods: {
     // 渲染的函数
     async render() {
-      let arr = [];
-      let res = await this.$http.get("/roles");
-      this.tableData = res.data.data;
+      let arr = []
+      let res = await this.$http.get('/roles')
+      this.tableData = res.data.data
     },
 
     // 编辑角色
     editPart(val) {
-      this.editPartVIsible = true;
-      this.editPartFrom = val;
+      this.editPartVIsible = true
+      this.editPartFrom = val
     },
     async editSubmit() {
-      this.editPartVIsible = false;
-      let { id } = this.editPartFrom;
-      let res = await this.$http.put(`/roles/${id}`, this.editPartFrom);
-      console.log(res);
-      let { msg, status } = res.data.meta;
+      this.editPartVIsible = false
+      let { id } = this.editPartFrom
+      let res = await this.$http.put(`/roles/${id}`, this.editPartFrom)
+      console.log(res)
+      let { msg, status } = res.data.meta
 
       if (status === 200) {
         this.$message({
-          type: "success",
-          message: "角色更新成功"
-        });
-        this.render();
+          type: 'success',
+          message: '角色更新成功'
+        })
+        this.render()
       }
     },
 
     // 删除角色
     delPart(val) {
-      this.$confirm("此操作将永久删除该角色, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+      this.$confirm('此操作将永久删除该角色, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
         .then(() => {
           this.$http.delete(`/roles/${val}`).then(res => {
             this.$message({
-              type: "success",
-              message: "删除成功!"
-            });
-            this.render();
-          });
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.render()
+          })
         })
         .catch(() => {
           this.$message({
-            type: "info",
-            message: "已取消删除"
-          });
-        });
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
     },
 
-    // 添加用户的事件
+    // 添加角色的事件
     addPart() {
-      this.addPartVisible = true;
+      this.addPartVisible = true
     },
     async addPartSubmit() {
-      let res = await this.$http.post(`/roles`, this.addPartFrom);
-      console.log(res);
-      let { msg, status } = res.data.meta;
+      let res = await this.$http.post(`/roles`, this.addPartFrom)
+      console.log(res)
+      let { msg, status } = res.data.meta
       if (status === 201) {
-        this.addPartVisible = false;
+        this.addPartVisible = false
         this.$message({
-          type: "success",
+          type: 'success',
           message: msg
-        });
+        })
         this.addPartFrom = {
-          roleDesc: "",
-          roleName: ""
-        };
-        this.render();
+          roleDesc: '',
+          roleName: ''
+        }
+        this.render()
       }
+    },
+
+    //给角色授权
+    async warrant(val) {
+      this.warrantVisible = true
+      this.warrantID = val.id
+      let res = await this.$http.get('/rights/tree')
+      let { status, msg } = res.data.meta
+      let arr = this.warrantFind(val.children)
+      if (status === 200) {
+        this.roleListData = res.data.data
+
+        this.warrantDefaultKeys = arr
+      }
+    },
+
+    // 角色授权id的遍历
+    warrantFind(val) {
+      let arr = []
+      let f = function(val) {
+        val.forEach(v => {
+          if (!v.children) {
+            arr.push(v.id)
+          } else {
+            f(v.children)
+          }
+        })
+      }
+      f(val)
+      return arr
+    },
+
+    // 编辑授权并提交
+    async editWarrant() {
+      this.warrantVisible = false
+      let str = this.warrantDefaultKeys.join(',')
+      let res = await this.$http.post(`/roles/${this.warrantID}/rights`, {
+        rids: str
+      })
+      let { status, msg } = res.data.meta
+      if (status === 200) {
+        this.$message({
+          type: 'success',
+          message: msg
+        })
+        this.render()
+      }
+    },
+    getCheckKey(key, node) {
+      let arr = node.checkedKeys
+      this.warrantDefaultKeys = arr
     }
   }
-};
+}
 </script>
