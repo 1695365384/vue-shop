@@ -57,62 +57,62 @@
 </style>
 
 <script>
-import { saveInfo } from '@/assets/js/userInfo'
+import { saveInfo } from "@/assets/js/userInfo";
 export default {
   data() {
     var validateName = (rule, value, callback) => {
       if (!value) {
-        return callback(new Error('用户名不能为空'))
+        return callback(new Error("用户名不能为空"));
       }
-      callback()
-    }
+      callback();
+    };
     var validatePass = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入密码'))
+      if (value === "") {
+        callback(new Error("请输入密码"));
       } else {
-        callback()
+        callback();
       }
-    }
+    };
 
     return {
       ruleForm2: {
-        username: '',
-        password: ''
+        username: "",
+        password: ""
       },
       rules2: {
-        username: [{ validator: validateName, trigger: 'blur' }],
-        password: [{ validator: validatePass, trigger: 'blur' }]
+        username: [{ validator: validateName, trigger: "blur" }],
+        password: [{ validator: validatePass, trigger: "blur" }]
       }
-    }
+    };
   },
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.login()
+          this.login();
         } else {
-          this.resetForm('ruleForm2')
+          this.resetForm("ruleForm2");
           return this.$message({
-            type: 'info',
+            type: "info",
             message: `账号或者密码输入格式不正确`
-          })
+          });
         }
-      })
+      });
     },
     resetForm(formName) {
-      this.$refs[formName].resetFields()
+      this.$refs[formName].resetFields();
     },
 
     async login() {
-      const res = await this.$http.post('/login', this.ruleForm2)
-      let { status, msg } = res.data.meta
+      const res = await this.$http.post("/login", this.ruleForm2);
+      let { status, msg } = res.data.meta;
       if (status === 200) {
-        saveInfo(res.data.data)
-        this.$router.push('/')
+        saveInfo(res.data.data);
+        this.$router.push("/");
       } else {
-        return this.$message(msg)
+        return this.$message(msg);
       }
     }
   }
-}
+};
 </script>

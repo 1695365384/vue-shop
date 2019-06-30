@@ -6,7 +6,7 @@ const userInfoKey = "user-info";
  * @return {undefined} 无返回值
  */
 
-export function saveInfo (userInfo = {}) {
+export function saveInfo(userInfo = {}) {
   window.localStorage.setItem(userInfoKey, JSON.stringify(userInfo));
 }
 
@@ -15,7 +15,7 @@ export function saveInfo (userInfo = {}) {
  * @return {String} 当前用户信息对象的字符串
  */
 
-export function getUserInfo () {
+export function getUserInfo() {
   return window.localStorage.getItem(userInfoKey);
 }
 
@@ -24,7 +24,7 @@ export function getUserInfo () {
  * @return {string} 用户的ToKen令牌信息
  */
 
-export function getToKen () {
+export function getToKen() {
   try {
     return JSON.parse(getUserInfo()).token;
   } catch (err) {
@@ -37,6 +37,6 @@ export function getToKen () {
  * @return {undefined} 无返回值
  */
 
-export function removUserInfo () {
+export function removUserInfo() {
   window.localStorage.removeItem(userInfoKey);
 }

@@ -1,51 +1,62 @@
 <template>
-  <div class="indexPages">
-    <navbar/>
-    <el-main>
-      <router-view></router-view>
-    </el-main>
-    <el-aside width="200px">
-      <!-- Aside content -->
+  <el-row>
+    <el-col>
+      <el-header height="56px">
+        <!-- Header content -->
+        <navbar />
+      </el-header>
 
-      <el-menu
-        class="el-menu-vertical-demo"
-        background-color="#545c64"
-        text-color="#fff"
-        active-text-color="#ffd04b"
-        :router="true"
-      >
-        <el-submenu v-for="(v,i) in authList" :key="v.id" :index="v.path">
-          <template slot="title">
-            <i :class="v.id==iconClassList[i].id?iconClassList[i].name:''"></i>
-            <span>{{v.authName}}</span>
-          </template>
+      <el-container>
+        <el-aside width="200px">
+          <!-- Aside content -->
+          <el-menu
+            class="el-menu-vertical-demo"
+            background-color="#545c64"
+            text-color="#fff"
+            active-text-color="#ffd04b"
+            :router="true"
+          >
+            <el-submenu v-for="(v, i) in authList" :key="v.id" :index="v.path">
+              <template slot="title">
+                <i :class="v.id == iconClassList[i].id ? iconClassList[i].name : ''"></i>
+                <span>{{ v.authName }}</span>
+              </template>
 
-          <el-menu-item v-for="val in v.children" :key="val.id" :index="val.path" :route="val.path">
-            <template slot="title">
-              <span>{{val.authName}}</span>
-            </template>
-          </el-menu-item>
-        </el-submenu>
-      </el-menu>
-    </el-aside>
-  </div>
+              <el-menu-item
+                v-for="val in v.children"
+                :key="val.id"
+                :index="val.path"
+                :route="val.path"
+              >
+                <template slot="title">
+                  <span>{{ val.authName }}</span>
+                </template>
+              </el-menu-item>
+            </el-submenu>
+          </el-menu>
+        </el-aside>
+
+        <el-main>
+          <!-- Main content -->
+          <router-view></router-view>
+        </el-main>
+      </el-container>
+    </el-col>
+  </el-row>
 </template>
 
 <style lang="less" scoped>
-.el-aside {
-  height: 100%;
-  padding-top: 56px;
-  position: relative;
-}
 .el-main {
-  position: absolute;
-  top: 56px;
-  left: 200px;
-  right: 15px;
-  height: 100%;
+  margin-top: 62px;
 }
-.indexPages {
-  height: 100%;
+.el-header {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: 0;
+}
+.el-aside {
+  margin-top: 62px;
 }
 .el-menu-vertical-demo {
   height: 100%;
@@ -73,6 +84,8 @@ export default {
     }
   },
 
+  computed: {},
+
   created() {
     this.$http.get('/menus').then(res => {
       this.authList = res.data.data
@@ -80,10 +93,8 @@ export default {
     })
   },
 
-  computed: {},
+  mounted() {},
 
-  methods: {},
-
-  mounted() {}
+  methods: {}
 }
 </script>

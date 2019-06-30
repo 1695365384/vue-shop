@@ -14,9 +14,16 @@
       <!-- 面板组件 -->
       <el-col style="margin-top:25px;">
         <el-card class="box-card">
-          <el-table :data="rightsData" highlight-current-row style="width: 100%;">
+          <el-table
+            :data="rightsData"
+            highlight-current-row
+            style="width: 100%;"
+          >
             <el-table-column type="index"></el-table-column>
-            <el-table-column property="authName" label="权限名称"></el-table-column>
+            <el-table-column
+              property="authName"
+              label="权限名称"
+            ></el-table-column>
             <el-table-column property="path" label="路径"></el-table-column>
             <el-table-column property="level" label="层级"></el-table-column>
           </el-table>
@@ -30,34 +37,34 @@
 
 <script>
 export default {
-  name: 'rights',
+  name: "Rights",
+
+  filters: {},
   data() {
     return {
       rightsData: []
-    }
+    };
   },
 
   created() {
-    this.$http.get('rights/list').then(res => {
-      console.log(res)
+    this.$http.get("rights/list").then(res => {
+      console.log(res);
       let list = res.data.data.map(v => {
         switch (v.level) {
-          case '0':
-            v.level = '一级'
-            break
-          case '1':
-            v.level = '二级'
-            break
-          case '2':
-            v.level = '三级'
-            break
+          case "0":
+            v.level = "一级";
+            break;
+          case "1":
+            v.level = "二级";
+            break;
+          case "2":
+            v.level = "三级";
+            break;
         }
-        return v
-      })
-      this.rightsData = list
-    })
-  },
-
-  filters: {}
-}
+        return v;
+      });
+      this.rightsData = list;
+    });
+  }
+};
 </script>

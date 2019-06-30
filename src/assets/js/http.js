@@ -9,13 +9,13 @@ export const http = axios.create({
 
 //如果hash的地址是login添加令牌到请求头里
 http.interceptors.request.use(
-  function (config) {
+  function(config) {
     if (config.url !== "/login") {
       config.headers["Authorization"] = getToKen();
     }
     return config;
   },
-  function (err) {
+  function(err) {
     return Promise.reject(err);
   }
 );
@@ -26,7 +26,7 @@ http.interceptors.request.use(
  * 如果是401 改变路由到login
  */
 http.interceptors.response.use(
-  function (response) {
+  function(response) {
     const { meta } = response.data;
     if (meta.status === 403) {
       window.alert("你没有权限操作");
@@ -40,7 +40,7 @@ http.interceptors.response.use(
     }
     return response;
   },
-  function (error) {
+  function(error) {
     return Promise.reject(error);
   }
 );
@@ -50,7 +50,7 @@ http.interceptors.response.use(
  */
 const httpPlugin = {};
 
-httpPlugin.install = function (Vue, option) {
+httpPlugin.install = function(Vue, option) {
   Vue.prototype.$http = http;
 };
 

@@ -69,8 +69,7 @@ const routerLink = new Router({
           component: () => {
             return import("./views/indexChild/goods.vue");
           }
-        },
-
+        }
       ]
     }
   ]
