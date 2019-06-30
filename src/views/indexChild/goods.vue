@@ -19,7 +19,7 @@
         <el-input v-model="pages.query" placeholder="请输入内容" class="input-with-select">
           <el-button slot="append" icon="el-icon-search" @click="queryGoods"></el-button>
         </el-input>
-        <el-button type="success" size="medium" plain @click="addGoods">添加商品</el-button>
+        <el-button type="success" size="medium" plain @click="addGoodsVisible = true">添加商品</el-button>
       </div>
 
       <!-- 添加商品的按钮 -->
@@ -35,10 +35,10 @@
             <el-table-column property="goods_weight" label="商品重量"></el-table-column>
             <el-table-column property="add_time" label="创建时间"></el-table-column>
             <el-table-column label="操作">
-              <template>
-                <el-button type="success" size="mini">编辑</el-button>
-                <el-button type="danger" size="mini">删除</el-button>
-                <el-button type="wring" size="mini">审核</el-button>
+              <template v-slot="goods">
+                <el-button type="success" size="mini" @click="editGoods(goods.row)">编辑</el-button>
+                <el-button type="danger" size="mini" @click="delGoods(goods.row)">删除</el-button>
+                <el-button type="warning" size="mini">审核</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -93,7 +93,7 @@
           </el-form-item>
 
           <el-form-item label="介绍" prop="goods_introduce">
-            <el-input type="text" v-model="addGoodsFrom.goods_introduce" autocomplete="off"></el-input>
+            <el-input type="textarea" v-model="addGoodsFrom.goods_introduce" autocomplete="off"></el-input>
           </el-form-item>
 
           <el-form-item label="图片临时路径" prop="pics">
@@ -106,11 +106,39 @@
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button @click="addGoodsVisible = false">取 消</el-button>
-          <el-button type="primary" @click="addGoodsVisible = false">确 定</el-button>
+          <el-button type="primary" @click="addGoods">确 定</el-button>
         </span>
       </el-dialog>
 
       <!-- 添加商品的模态框 -->
+
+      <!-- 编辑商品的模态框 -->
+
+      <el-dialog title="编辑商品信息" :visible.sync="editGoodsVisible" width="30%">
+        <el-form :model="editGoodsFrom" status-icon :rules="addGoodsrules" label-width="100px">
+          <el-form-item label="商品名称" prop="goods_name">
+            <el-input type="text" v-model="editGoodsFrom.goods_name" autocomplete="off"></el-input>
+          </el-form-item>
+
+          <el-form-item label="价格" prop="goods_price">
+            <el-input type="text" v-model="editGoodsFrom.goods_price" autocomplete="off"></el-input>
+          </el-form-item>
+
+          <el-form-item label="数量" prop="goods_number">
+            <el-input type="text" v-model="editGoodsFrom.goods_number" autocomplete="off"></el-input>
+          </el-form-item>
+
+          <el-form-item label="重量" prop="goods_weight">
+            <el-input type="text" v-model="editGoodsFrom.goods_weight" autocomplete="off"></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot="footer">
+          <el-button @click=" editGoodsVisible= false">取 消</el-button>
+          <el-button type="primary" @click="editGoodsSubmit">确 定</el-button>
+        </span>
+      </el-dialog>
+
+      <!-- 编辑商品的模态框 -->
     </el-col>
   </el-row>
 </template>
@@ -123,6 +151,7 @@
 
 
 <script>
+import { async } from 'q'
 export default {
   name: 'Goods',
   data() {
@@ -135,16 +164,41 @@ export default {
       },
       // 添加商品的数据
       addGoodsVisible: false,
-      addGoodsFrom: [],
+      addGoodsFrom: {
+        goods_name: '',
+        goods_cat: '',
+        goods_price: '',
+        goods_number: '',
+        goods_weight: '',
+        goods_introduce: '',
+        pics: {},
+        attrs: []
+      },
       addGoodsrules: {
         goods_name: [
           { required: true, message: '请输入商品名', trigger: 'blur' }
         ],
 
-        goods_cat: [
-          { required: true, message: '请输入商品名', trigger: 'blur' }
-        ]
-      }
+        goods_cat: [{ required: true, message: '请输入分类', trigger: 'blur' }],
+
+        goods_price: [
+          { required: true, message: '请输入价格', trigger: 'blur' }
+        ],
+
+        goods_number: [
+          { required: true, message: '请输入数量', trigger: 'blur' }
+        ],
+
+        goods_weight: [
+          { required: true, message: '请输入重量', trigger: 'blur' }
+        ],
+
+        goods_introduce: [{ required: true, message: '介绍', trigger: 'blur' }]
+      },
+
+      // 编辑商品的数据
+      editGoodsVisible: false,
+      editGoodsFrom: {}
     }
   },
 
@@ -169,6 +223,20 @@ export default {
         let list = res.data.data.goods.map(v => {
           v.add_time = this.$moment(+(v.add_time + '000')).format('YYYY-MM-DD ')
           v.upd_time = this.$moment(+(v.upd_time + '000')).format('YYYY-MM-DD ')
+          switch (v.goods_state) {
+            case null:
+              v.goods_state = '未通过'
+              break
+            case 0:
+              v.goods_state = '未通过'
+              break
+            case 1:
+              v.goods_state = '审核中'
+              break
+            case 2:
+              v.goods_state = '已通过'
+              break
+          }
           return v
         })
         this.goodsData = list
@@ -185,8 +253,58 @@ export default {
     },
 
     // 添加商品
-    addGoods() {
-      this.addGoodsVisible = true
+    async addGoods() {
+      let res = await this.$http.post('/goods', this.addGoodsFrom)
+      let { status, msg } = res.data.meta
+    },
+
+    // 编辑商品
+    async editGoods(val) {
+      this.editGoodsVisible = true
+      let res = await this.$http.get(`/goods/${val.goods_id}`)
+      let { status } = res.data.meta
+      if (status === 200) {
+        this.editGoodsFrom = res.data.data
+      }
+    },
+
+    // 编辑商品提交功能
+    async editGoodsSubmit() {
+      let res = await this.$http.put(
+        `/goods/${this.editGoodsFrom.goods_id}`,
+        this.editGoodsFrom
+      )
+      let { status } = res.data.meta
+      if (status === 200) {
+        this.editGoodsFrom = {}
+        this.editGoodsVisible = false
+      }
+    },
+
+    // 删除商品功能
+    delGoods(val) {
+      this.$confirm('此操作将永久删除该商品, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        let { goods_id } = val
+        let res = this.$http.delete(`/goods/${goods_id}`).then(res => {
+          let { status, msg } = res.data.meta
+          if (status === 200) {
+            this.$message({
+              type: 'success',
+              message: msg
+            })
+            this.render()
+          } else {
+            this.$message({
+              type: 'danger',
+              message: '删除失败'
+            })
+          }
+        })
+      })
     }
   }
 }

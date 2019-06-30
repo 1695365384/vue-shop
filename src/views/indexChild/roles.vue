@@ -159,7 +159,6 @@ export default {
       this.editPartVIsible = false
       let { id } = this.editPartFrom
       let res = await this.$http.put(`/roles/${id}`, this.editPartFrom)
-      console.log(res)
       let { msg, status } = res.data.meta
 
       if (status === 200) {
@@ -201,7 +200,6 @@ export default {
     },
     async addPartSubmit() {
       let res = await this.$http.post(`/roles`, this.addPartFrom)
-      console.log(res)
       let { msg, status } = res.data.meta
       if (status === 201) {
         this.addPartVisible = false
