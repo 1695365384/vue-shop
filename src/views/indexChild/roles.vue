@@ -18,7 +18,49 @@
       <!-- 面板组件 -->
       <el-col>
         <el-card class="box-card">
-          <el-table :data="tableData" highlight-current-row style="width: 100%">
+          <el-table
+            :data="tableData"
+            highlight-current-row
+            style="width: 100%"
+            @expand-change="expandChange"
+          >
+            <el-table-column type="expand">
+              <template v-slot="level">
+                <el-row class="el-level1" v-for="level1 in level.row.children" :key="level1.id">
+                  <el-col :span="4">
+                    <el-tag
+                      type="success"
+                      closable
+                      @close="delTag(level.row, level1)"
+                    >{{level1.authName}}</el-tag>
+                    <i class="el-icon-arrow-right"></i>
+                  </el-col>
+                  <el-col :span="20">
+                    <el-row v-for="level2 in level1.children" :key="level2.id">
+                      <el-col :span="4">
+                        <el-tag
+                          type="danger"
+                          closable
+                          style="margin-bottom:15px;"
+                          @close="delTag(level.row,level2)"
+                        >{{level2.authName}}</el-tag>
+                        <i class="el-icon-arrow-right"></i>
+                      </el-col>
+                      <el-col :span="20">
+                        <el-tag
+                          type="warning"
+                          closable
+                          v-for="level3 in level2.children"
+                          @close="delTag(level.row,level3)"
+                          :key="level3.id"
+                          style="margin-right:10px;"
+                        >{{level3.authName}}</el-tag>
+                      </el-col>
+                    </el-row>
+                  </el-col>
+                </el-row>
+              </template>
+            </el-table-column>
             <el-table-column type="index"></el-table-column>
             <el-table-column property="roleName" label="角色"></el-table-column>
             <el-table-column property="roleDesc" label="描述"></el-table-column>
@@ -57,20 +99,19 @@
       <!-- 角色授权的树状结构 -->
       <el-dialog title="角色授权编辑" :visible.sync="warrantVisible" width="30%">
         <el-tree
+          ref="tree"
           :data="roleListData"
           show-checkbox
           default-expand-all
           node-key="id"
-          ref="tree"
           highlight-current
           :props="warrantTree"
           :default-checked-keys="warrantDefaultKeys"
-          @check="getCheckKey"
         ></el-tree>
 
         <span slot="footer">
-          <el-button @click="warrantVisible=false">取 消</el-button>
-          <el-button type="primary" @click="editWarrant">确 定</el-button>
+          <el-button @click="warrantVisible = false">取 消</el-button>
+          <el-button type="primary" @click.prevent="editWarrant">确 定</el-button>
         </span>
       </el-dialog>
 
@@ -96,6 +137,12 @@
     </el-col>
   </el-row>
 </template>
+<style lang="less" scoped>
+.el-level1 {
+  border-bottom: 1px dashed #000;
+  padding: 10px 0;
+}
+</style>
 
 <script>
 export default {
@@ -220,12 +267,14 @@ export default {
       this.warrantVisible = true
       this.warrantID = val.id
       let res = await this.$http.get('/rights/tree')
+      let role = await this.$http.get('/roles')
+
+      let list = role.data.data.find(v => v.id === val.id)
       let { status, msg } = res.data.meta
-      let arr = this.warrantFind(val.children)
+
       if (status === 200) {
         this.roleListData = res.data.data
-
-        this.warrantDefaultKeys = arr
+        this.warrantDefaultKeys = this.warrantFind(list.children)
       }
     },
 
@@ -248,7 +297,13 @@ export default {
     // 编辑授权并提交
     async editWarrant() {
       this.warrantVisible = false
-      let str = this.warrantDefaultKeys.join(',')
+      // 获取当前选中的节点
+      let arr = [
+        ...this.$refs.tree.getCheckedKeys(),
+        ...this.$refs.tree.getHalfCheckedKeys()
+      ]
+      let str = arr.join(',')
+
       let res = await this.$http.post(`/roles/${this.warrantID}/rights`, {
         rids: str
       })
@@ -258,12 +313,26 @@ export default {
           type: 'success',
           message: msg
         })
-        this.render()
       }
     },
-    getCheckKey(key, node) {
-      let arr = node.checkedKeys
-      this.warrantDefaultKeys = arr
+
+    //删除标签的对应的列表
+    async delTag(row, id) {
+      let res = await this.$http.delete(`roles/${row.id}/rights/${id.id}`)
+      let { status, msg } = res.data.meta
+      if (status === 200) {
+        row.children = res.data.data
+        this.$message({
+          type: 'success',
+          message: msg
+        })
+      }
+    },
+
+    async expandChange(row) {
+      let role = await this.$http.get('/roles')
+      let list = role.data.data.find(v => v.id === row.id)
+      row = list
     }
   }
 }

@@ -18,7 +18,11 @@
           >
             <el-submenu v-for="(v, i) in authList" :key="v.id" :index="v.path">
               <template slot="title">
-                <i :class="v.id == iconClassList[i].id ? iconClassList[i].name : ''"></i>
+                <i
+                  :class="
+                    v.id == iconClassList[i].id ? iconClassList[i].name : ''
+                  "
+                ></i>
                 <span>{{ v.authName }}</span>
               </template>
 
@@ -64,9 +68,9 @@
 </style>
 
 <script>
-import navbar from '../components/navbar'
+import navbar from "../components/navbar";
 export default {
-  name: 'Index',
+  name: "Index",
   components: {
     navbar
   },
@@ -74,21 +78,21 @@ export default {
     return {
       authList: [],
       iconClassList: [
-        { id: 125, name: 'el-icon-user-solid' },
-        { id: 103, name: 'el-icon-key' },
-        { id: 101, name: 'el-icon-copy-document' },
-        { id: 102, name: 'el-icon-s-claim' },
-        { id: 145, name: 'el-icon-s-order' }
+        { id: 125, name: "el-icon-user-solid" },
+        { id: 103, name: "el-icon-key" },
+        { id: 101, name: "el-icon-copy-document" },
+        { id: 102, name: "el-icon-s-claim" },
+        { id: 145, name: "el-icon-s-order" }
       ],
       authChild: []
-    }
+    };
   },
 
   created() {
-    this.$http.get('/menus').then(res => {
-      this.authList = res.data.data
-      this.authChild = res.data.data.children
-    })
+    this.$http.get("/menus").then(res => {
+      this.authList = res.data.data;
+      this.authChild = res.data.data.children;
+    });
   }
-}
+};
 </script>

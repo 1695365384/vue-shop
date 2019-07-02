@@ -69,6 +69,17 @@ const routerLink = new Router({
           component: () => {
             return import("./views/indexChild/goods.vue");
           }
+        },
+
+        {
+          path: "/categories",
+          name: "categories",
+          meta: {
+            title: "分类列表"
+          },
+          component: () => {
+            return import("./views/indexChild/categories.vue");
+          }
         }
       ]
     }

@@ -15,10 +15,24 @@
       <!-- main里面的内容 -->
       <el-col>
         <div style="margin-top: 15px;">
-          <el-input v-model="input" placeholder="请输入内容" class="input-with-select">
-            <el-button slot="append" icon="el-icon-search" @click="searchInput"></el-button>
+          <el-input
+            v-model="input"
+            placeholder="请输入内容"
+            class="input-with-select"
+          >
+            <el-button
+              slot="append"
+              icon="el-icon-search"
+              @click="searchInput"
+            ></el-button>
           </el-input>
-          <el-button type="success" size="medium" plain @click="addUserMode = true">添加用户</el-button>
+          <el-button
+            type="success"
+            size="medium"
+            plain
+            @click="addUserMode = true"
+            >添加用户</el-button
+          >
         </div>
       </el-col>
 
@@ -41,9 +55,24 @@
             </el-table-column>
             <el-table-column prop="name" label="操作">
               <template #default="edit">
-                <el-button type="primary" icon="el-icon-edit" circle @click="editUser(edit.row)"></el-button>
-                <el-button type="success" icon="el-icon-check" circle @click="Permission(edit.row)"></el-button>
-                <el-button type="danger" icon="el-icon-delete" circle @click="delUser(edit)"></el-button>
+                <el-button
+                  type="primary"
+                  icon="el-icon-edit"
+                  circle
+                  @click="editUser(edit.row)"
+                ></el-button>
+                <el-button
+                  type="success"
+                  icon="el-icon-check"
+                  circle
+                  @click="Permission(edit.row)"
+                ></el-button>
+                <el-button
+                  type="danger"
+                  icon="el-icon-delete"
+                  circle
+                  @click="delUser(edit)"
+                ></el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -55,7 +84,11 @@
     <el-dialog title="编辑用户" :visible.sync="dialogFormVisible">
       <el-form :model="editUserFrom">
         <el-form-item label="用户名">
-          <el-input v-model="editUserFrom.name" autocomplete="off" disabled></el-input>
+          <el-input
+            v-model="editUserFrom.name"
+            autocomplete="off"
+            disabled
+          ></el-input>
         </el-form-item>
 
         <el-form-item label="邮箱">
@@ -73,10 +106,28 @@
     </el-dialog>
 
     <!-- 添加用户的模态框 -->
-    <el-dialog title="添加新的用户" :visible="addUserMode" :before-close="iconClose">
-      <el-form ref="addUserFroms" :model="addUserFrom" :rules="addUserRules" status-icon>
-        <el-form-item label="用户名" prop="username" required label-width="120px">
-          <el-input v-model="addUserFrom.username" autocomplete="off" placeholder="请输入用户名"></el-input>
+    <el-dialog
+      title="添加新的用户"
+      :visible="addUserMode"
+      :before-close="iconClose"
+    >
+      <el-form
+        ref="addUserFroms"
+        :model="addUserFrom"
+        :rules="addUserRules"
+        status-icon
+      >
+        <el-form-item
+          label="用户名"
+          prop="username"
+          required
+          label-width="120px"
+        >
+          <el-input
+            v-model="addUserFrom.username"
+            autocomplete="off"
+            placeholder="请输入用户名"
+          ></el-input>
         </el-form-item>
 
         <el-form-item label="密码" prop="password" required label-width="120px">
@@ -98,13 +149,20 @@
         </el-form-item>
 
         <el-form-item label="邮箱" prop="email" required label-width="120px">
-          <el-input v-model="addUserFrom.email" type="email" autocomplete="off" placeholder="请输入邮箱"></el-input>
+          <el-input
+            v-model="addUserFrom.email"
+            type="email"
+            autocomplete="off"
+            placeholder="请输入邮箱"
+          ></el-input>
         </el-form-item>
       </el-form>
 
       <div slot="footer" class="dialog-footer">
         <el-button @click="addUserMode = false">取 消</el-button>
-        <el-button type="primary" @click="addUser('addUserFroms')">确 定</el-button>
+        <el-button type="primary" @click="addUser('addUserFroms')"
+          >确 定</el-button
+        >
       </div>
     </el-dialog>
 
@@ -149,178 +207,178 @@
 
 <script>
 export default {
-  name: 'Users',
+  name: "Users",
   data() {
     return {
-      input: '',
+      input: "",
       PerFrom: {
-        perSelet: '',
-        PerUsername: '',
+        perSelet: "",
+        PerUsername: "",
         PerUserList: [],
-        PerUserId: ''
+        PerUserId: ""
       },
 
       PerVisible: false,
       tableData: [
         {
-          name: '',
-          mobile: '',
-          email: '',
-          status: '',
-          id: ''
+          name: "",
+          mobile: "",
+          email: "",
+          status: "",
+          id: ""
         }
       ],
 
       dialogFormVisible: false,
 
       editUserFrom: {
-        name: '',
-        email: '',
-        mobile: '',
-        id: ''
+        name: "",
+        email: "",
+        mobile: "",
+        id: ""
       },
 
       addUserFrom: {
-        username: '',
-        password: '',
-        mobile: '',
-        email: ''
+        username: "",
+        password: "",
+        mobile: "",
+        email: ""
       },
       addUserRules: {
         username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 6, max: 12, message: '长度在6到12个字符左右', trigger: 'blur' }
+          { required: true, message: "请输入用户名", trigger: "blur" },
+          { min: 6, max: 12, message: "长度在6到12个字符左右", trigger: "blur" }
         ],
 
         password: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
-          { min: 6, message: '密码不能少于6位', trigger: 'blur' }
+          { required: true, message: "请输入密码", trigger: "blur" },
+          { min: 6, message: "密码不能少于6位", trigger: "blur" }
         ],
 
-        email: [{ required: true, message: '请输入邮箱', trigger: 'blur' }],
+        email: [{ required: true, message: "请输入邮箱", trigger: "blur" }],
 
         mobile: [
-          { required: true, message: '手机号不能为空', trigger: 'blur' },
-          { min: 11, message: '请输入正确的手机号', trigger: 'blur' }
+          { required: true, message: "手机号不能为空", trigger: "blur" },
+          { min: 11, message: "请输入正确的手机号", trigger: "blur" }
         ]
       },
 
       addUserMode: false,
-      brandText: ''
-    }
+      brandText: ""
+    };
   },
 
   watch: {},
 
   created() {
-    this.brandText = document.title
-    this.render()
+    this.brandText = document.title;
+    this.render();
   },
 
   methods: {
     //编辑用户
     editUser(val) {
-      this.dialogFormVisible = true
-      let { id, name, mobile, email } = val
+      this.dialogFormVisible = true;
+      let { id, name, mobile, email } = val;
       this.editUserFrom = {
         name,
         mobile,
         email,
         id
-      }
+      };
     },
     //改变用户状态
     async changeSwich(val) {
-      let { id, status } = val
-      let res = await this.$http.put(`users/${id}/state/${status}`)
+      let { id, status } = val;
+      let res = await this.$http.put(`users/${id}/state/${status}`);
       if (res.data.meta.status === 200) {
-        let now = status ? '启用' : '禁用'
-        let types = status ? 'success' : 'warning'
+        let now = status ? "启用" : "禁用";
+        let types = status ? "success" : "warning";
         this.$message({
           message: `设置${now}状态成功`,
           type: `${types}`
-        })
+        });
       }
     },
     //提交编辑用户的表单
     async subEditFrom() {
-      this.dialogFormVisible = false
-      let { id } = this.editUserFrom
-      let res = await this.$http.put(`/users/${id}`, this.editUserFrom)
+      this.dialogFormVisible = false;
+      let { id } = this.editUserFrom;
+      let res = await this.$http.put(`/users/${id}`, this.editUserFrom);
 
       if (res.data.meta.status === 200) {
         this.$message({
           message: `更新用户信息成功`,
           type: `success`
-        })
+        });
       } else {
         this.$message({
           message: `更新用户信息失败,`,
           type: `warning`
-        })
+        });
       }
 
-      this.render()
+      this.render();
     },
     //删除用户
     delUser(val) {
-      let { id } = val.row
-      this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+      let { id } = val.row;
+      this.$confirm("此操作将永久删除该用户, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       })
         .then(() => {
           this.$http.delete(`/users/${id}`).then(res => {
             if (res.data.meta.status === 200) {
               this.$message({
-                type: 'success',
-                message: '删除成功!'
-              })
+                type: "success",
+                message: "删除成功!"
+              });
             }
-          })
-          this.render()
+          });
+          this.render();
         })
         .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
-        })
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     },
 
     // 添加用户
     addUser(add) {
-      this.addUserMode = true
+      this.addUserMode = true;
       this.$refs[add].validate(valid => {
         if (valid) {
-          this.$http.post('/users', this.addUserFrom).then(res => {
+          this.$http.post("/users", this.addUserFrom).then(res => {
             if (res.data.meta.status === 201) {
-              this.$refs['addUserFroms'].resetFields()
-              this.addUserMode = false
+              this.$refs["addUserFroms"].resetFields();
+              this.addUserMode = false;
               this.$message({
-                type: 'success',
-                message: '创建成功了,不要告诉别人呦'
-              })
-              this.render()
+                type: "success",
+                message: "创建成功了,不要告诉别人呦"
+              });
+              this.render();
             }
-          })
+          });
         } else {
-          return
+          return;
         }
-      })
+      });
     },
 
     //渲染函数
     render() {
       this.$http
-        .get('/users', {
+        .get("/users", {
           params: { query: this.input, pagenum: 1, pagesize: 100 }
         })
         .then(res => {
-          let list = res.data.data.users
-          let obj = {}
-          let tabList = []
+          let list = res.data.data.users;
+          let obj = {};
+          let tabList = [];
           list.forEach((v, i) => {
             tabList[i] = {
               name: v.username,
@@ -328,51 +386,51 @@ export default {
               status: v.mg_state,
               mobile: v.mobile,
               id: v.id
-            }
-          })
-          this.tableData = tabList
-        })
+            };
+          });
+          this.tableData = tabList;
+        });
     },
     //关闭模态框的事件
     iconClose(del) {
-      this.addUserMode = false
-      this.$refs['addUserFroms'].resetFields()
+      this.addUserMode = false;
+      this.$refs["addUserFroms"].resetFields();
     },
     //搜索框事件
     searchInput() {
-      this.render()
+      this.render();
     },
 
     // 分配用户的角色
     async Permission(val) {
-      let res = await this.$http.get(`/users/${val.id}`)
-      let roles = await this.$http.get('/roles')
-      let { rid } = res.data.data
-      let list2 = roles.data.data
-      let roleName = list2.find(v => v.id == rid) || ''
+      let res = await this.$http.get(`/users/${val.id}`);
+      let roles = await this.$http.get("/roles");
+      let { rid } = res.data.data;
+      let list2 = roles.data.data;
+      let roleName = list2.find(v => v.id == rid) || "";
       this.PerFrom = {
         PerUsername: val.name,
         PerUserList: roles.data.data,
         perSelet: roleName.roleName,
         PerUserId: val.id
-      }
-      this.PerVisible = true
+      };
+      this.PerVisible = true;
     },
     //更新用户的角色
     async putPer() {
-      this.PerVisible = false
-      let { PerUserId, perSelet } = this.PerFrom
+      this.PerVisible = false;
+      let { PerUserId, perSelet } = this.PerFrom;
       let res = await this.$http.put(`/users/${PerUserId}/role`, {
         rid: perSelet
-      })
-      let { meta } = res.data
+      });
+      let { meta } = res.data;
       if (meta.status === 200) {
         this.$message({
-          type: 'success',
+          type: "success",
           message: meta.msg
-        })
+        });
       }
     }
   }
-}
+};
 </script>

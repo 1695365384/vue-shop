@@ -47,12 +47,12 @@
 
           <el-pagination
             background
-            @current-change="goodsCurrent"
             :current-page.sync="pages.pagenum"
             :page-size="10"
             layout="prev, pager, next"
             :total="pages.total"
             style="margin-top:25px;"
+            @current-change="goodsCurrent"
           ></el-pagination>
 
           <!-- 分页组件 -->
@@ -65,43 +65,43 @@
 
       <el-dialog title="添加商品" :visible.sync="addGoodsVisible" width="30%">
         <el-form
+          ref="ruleForm"
           :model="addGoodsFrom"
           status-icon
           :rules="addGoodsrules"
-          ref="ruleForm"
           label-width="100px"
           class="demo-ruleForm"
         >
           <el-form-item label="商品名称" prop="goods_name">
-            <el-input type="text" v-model="addGoodsFrom.goods_name" autocomplete="off"></el-input>
+            <el-input v-model="addGoodsFrom.goods_name" type="text" autocomplete="off"></el-input>
           </el-form-item>
 
           <el-form-item label="分类列表" prop="goods_cat">
-            <el-input type="text" v-model="addGoodsFrom.goods_cat" autocomplete="off"></el-input>
+            <el-input v-model="addGoodsFrom.goods_cat" type="text" autocomplete="off"></el-input>
           </el-form-item>
 
           <el-form-item label="价格" prop="goods_price">
-            <el-input type="text" v-model="addGoodsFrom.goods_price" autocomplete="off"></el-input>
+            <el-input v-model="addGoodsFrom.goods_price" type="text" autocomplete="off"></el-input>
           </el-form-item>
 
           <el-form-item label="数量" prop="goods_number">
-            <el-input type="text" v-model="addGoodsFrom.goods_number" autocomplete="off"></el-input>
+            <el-input v-model="addGoodsFrom.goods_number" type="text" autocomplete="off"></el-input>
           </el-form-item>
 
           <el-form-item label="重量" prop="goods_weight">
-            <el-input type="text" v-model="addGoodsFrom.goods_weight" autocomplete="off"></el-input>
+            <el-input v-model="addGoodsFrom.goods_weight" type="text" autocomplete="off"></el-input>
           </el-form-item>
 
           <el-form-item label="介绍" prop="goods_introduce">
-            <el-input type="textarea" v-model="addGoodsFrom.goods_introduce" autocomplete="off"></el-input>
+            <el-input v-model="addGoodsFrom.goods_introduce" type="textarea" autocomplete="off"></el-input>
           </el-form-item>
 
           <el-form-item label="图片临时路径" prop="pics">
-            <el-input type="text" v-model="addGoodsFrom.pics" autocomplete="off"></el-input>
+            <el-input v-model="addGoodsFrom.pics" type="text" autocomplete="off"></el-input>
           </el-form-item>
 
           <el-form-item label="商品的参数" prop="attrs">
-            <el-input type="text" v-model="addGoodsFrom.attrs" autocomplete="off"></el-input>
+            <el-input v-model="addGoodsFrom.attrs" type="text" autocomplete="off"></el-input>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -117,23 +117,23 @@
       <el-dialog title="编辑商品信息" :visible.sync="editGoodsVisible" width="30%">
         <el-form :model="editGoodsFrom" status-icon :rules="addGoodsrules" label-width="100px">
           <el-form-item label="商品名称" prop="goods_name">
-            <el-input type="text" v-model="editGoodsFrom.goods_name" autocomplete="off"></el-input>
+            <el-input v-model="editGoodsFrom.goods_name" type="text" autocomplete="off"></el-input>
           </el-form-item>
 
           <el-form-item label="价格" prop="goods_price">
-            <el-input type="text" v-model="editGoodsFrom.goods_price" autocomplete="off"></el-input>
+            <el-input v-model="editGoodsFrom.goods_price" type="text" autocomplete="off"></el-input>
           </el-form-item>
 
           <el-form-item label="数量" prop="goods_number">
-            <el-input type="text" v-model="editGoodsFrom.goods_number" autocomplete="off"></el-input>
+            <el-input v-model="editGoodsFrom.goods_number" type="text" autocomplete="off"></el-input>
           </el-form-item>
 
           <el-form-item label="重量" prop="goods_weight">
-            <el-input type="text" v-model="editGoodsFrom.goods_weight" autocomplete="off"></el-input>
+            <el-input v-model="editGoodsFrom.goods_weight" type="text" autocomplete="off"></el-input>
           </el-form-item>
         </el-form>
         <span slot="footer">
-          <el-button @click=" editGoodsVisible= false">取 消</el-button>
+          <el-button @click="editGoodsVisible = false">取 消</el-button>
           <el-button type="primary" @click="editGoodsSubmit">确 定</el-button>
         </span>
       </el-dialog>
@@ -148,7 +148,6 @@
   width: 200px;
 }
 </style>
-
 
 <script>
 import { async } from 'q'
@@ -274,10 +273,14 @@ export default {
         `/goods/${this.editGoodsFrom.goods_id}`,
         this.editGoodsFrom
       )
-      let { status } = res.data.meta
+      let { status, msg } = res.data.meta
       if (status === 200) {
         this.editGoodsFrom = {}
         this.editGoodsVisible = false
+        this.$message({
+          type: 'success',
+          message: '更新商品成功'
+        })
       }
     },
 
