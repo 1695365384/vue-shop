@@ -6,7 +6,7 @@ import "./assets/css/base.css";
 import moment from "vue-moment";
 import "echarts";
 import ECharts from "vue-echarts/components/ECharts.vue";
-import 'echarts/lib/chart/line'
+import "echarts/lib/chart/line";
 
 Vue.component("v-chart", ECharts);
 

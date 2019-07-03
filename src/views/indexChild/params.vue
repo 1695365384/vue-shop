@@ -27,13 +27,17 @@
 
 <script>
 export default {
-  name: 'params',
+  name: "Params",
   data() {
     return {
       // 多选菜单的数据
-      selectValues: '',
+      selectValues: "",
       selectOptions: []
-    }
+    };
+  },
+
+  created() {
+    this.render();
   },
 
   methods: {
@@ -43,14 +47,10 @@ export default {
     // },
 
     async render() {
-      let res = await this.$http.get('/categories')
-      this.selectOptions = res.data.data
-      console.log(res, this.selectValues)
+      let res = await this.$http.get("/categories");
+      this.selectOptions = res.data.data;
+      console.log(res, this.selectValues);
     }
-  },
-
-  created() {
-    this.render()
   }
-}
+};
 </script>
