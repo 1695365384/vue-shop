@@ -91,6 +91,17 @@ const routerLink = new Router({
           component: () => {
             return import("./views/indexChild/reports.vue");
           }
+        },
+
+        {
+          path: "/params",
+          name: "params",
+          meta: {
+            title: "分类列表"
+          },
+          component: () => {
+            return import("./views/indexChild/params.vue");
+          }
         }
       ]
     }
