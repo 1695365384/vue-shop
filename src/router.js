@@ -80,6 +80,17 @@ const routerLink = new Router({
           component: () => {
             return import("./views/indexChild/categories.vue");
           }
+        },
+
+        {
+          path: "/reports",
+          name: "reports",
+          meta: {
+            title: "数据统计"
+          },
+          component: () => {
+            return import("./views/indexChild/reports.vue");
+          }
         }
       ]
     }

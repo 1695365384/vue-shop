@@ -16,7 +16,13 @@
       <!-- 添加商品的按钮 -->
 
       <div style="margin-top: 15px;">
-        <el-button type="success" size="medium" plain @click="addCategoriesVisible = true">添加分类</el-button>
+        <el-button
+          type="success"
+          size="medium"
+          plain
+          @click="addCategoriesVisible = true"
+          >添加分类</el-button
+        >
       </div>
 
       <!-- 添加商品的按钮 -->
@@ -25,13 +31,35 @@
       <el-col style="margin-top:25px;">
         <el-card class="box-card">
           <el-table :data="categoriesData" highlight-current-row border>
-            <el-table-column align="center" prop="cat_name" label="分类名称"></el-table-column>
-            <el-table-column align="center" prop="cat_deleted" label="是否有效"></el-table-column>
-            <el-table-column align="center" prop="cat_level" label="层级"></el-table-column>
+            <el-table-column
+              align="center"
+              prop="cat_name"
+              label="分类名称"
+            ></el-table-column>
+            <el-table-column
+              align="center"
+              prop="cat_deleted"
+              label="是否有效"
+            ></el-table-column>
+            <el-table-column
+              align="center"
+              prop="cat_level"
+              label="层级"
+            ></el-table-column>
             <el-table-column align="center" label="操作">
               <template v-slot="Categories">
-                <el-button type="success" size="mini" @click="editCategories(Categories.row)">编辑</el-button>
-                <el-button type="danger" size="mini" @click="delCategories(Categories.row)">删除</el-button>
+                <el-button
+                  type="success"
+                  size="mini"
+                  @click="editCategories(Categories.row)"
+                  >编辑</el-button
+                >
+                <el-button
+                  type="danger"
+                  size="mini"
+                  @click="delCategories(Categories.row)"
+                  >删除</el-button
+                >
               </template>
             </el-table-column>
           </el-table>
@@ -39,10 +67,10 @@
           <!-- 分页组件 -->
 
           <el-pagination
-            @current-change="pagesChangesCurrent"
             :current-page.sync="pages.pagenum"
             layout="prev, pager, next"
             :total="pages.total"
+            @current-change="pagesChangesCurrent"
           ></el-pagination>
           <!-- 分页组件 -->
         </el-card>
@@ -56,8 +84,10 @@
         <el-input v-model="editCategoriesName"></el-input>
 
         <span slot="footer">
-          <el-button @click=" categoryVisible= false">取 消</el-button>
-          <el-button type="primary" @click="editCategoryNameSubmit">确 定</el-button>
+          <el-button @click="categoryVisible = false">取 消</el-button>
+          <el-button type="primary" @click="editCategoryNameSubmit"
+            >确 定</el-button
+          >
         </span>
       </el-dialog>
 
@@ -68,7 +98,7 @@
 
 <script>
 export default {
-  name: 'Categories',
+  name: "Categories",
   data() {
     return {
       //表格列表
@@ -86,25 +116,25 @@ export default {
       //编辑分类的模态框
       categoryVisible: false,
       category_id: -1,
-      editCategoriesName: ''
-    }
+      editCategoriesName: ""
+    };
   },
   created() {
-    this.render()
+    this.render();
   },
 
   methods: {
     //编辑分类列表
     editCategories(val) {
-      this.categoryVisible = true
-      this.editCategoriesName = val.cat_name
-      this.category_id = val.cat_id
+      this.categoryVisible = true;
+      this.editCategoriesName = val.cat_name;
+      this.category_id = val.cat_id;
     },
     async editCategoryNameSubmit() {
-      this.categoryVisible = false
+      this.categoryVisible = false;
       let res = await this.$http.put(`/categories/${this.category_id}`, {
         cat_name: this.editCategoriesName
-      })
+      });
     },
     //删除分类
     delCategories(val) {},
@@ -112,41 +142,41 @@ export default {
     //渲染函数
 
     async render() {
-      let res = await this.$http.get('/categories', {
+      let res = await this.$http.get("/categories", {
         params: {
           pagenum: this.pages.pagenum,
           pagesize: 10,
           type: 3
         }
-      })
-      let { status, meta } = res.data.meta
+      });
+      let { status, meta } = res.data.meta;
 
       let list = res.data.data.result.map(v => {
-        v.cat_deleted = !v.cat_deleted ? '否' : '是'
+        v.cat_deleted = !v.cat_deleted ? "否" : "是";
         switch (v.cat_level) {
           case 0:
-            v.cat_level = '一级'
-            break
+            v.cat_level = "一级";
+            break;
           case 1:
-            v.cat_level = '二级'
-            break
+            v.cat_level = "二级";
+            break;
           case 2:
-            v.cat_level = '三级'
-            break
+            v.cat_level = "三级";
+            break;
         }
-        return v
-      })
+        return v;
+      });
       if (status === 200) {
-        this.categoriesData = list
-        this.pages.total = res.data.data.total
+        this.categoriesData = list;
+        this.pages.total = res.data.data.total;
       }
     },
 
     // 分页点击事件
     pagesChangesCurrent(val) {
-      this.pages.pagenum = val
-      this.render()
+      this.pages.pagenum = val;
+      this.render();
     }
   }
-}
+};
 </script>
