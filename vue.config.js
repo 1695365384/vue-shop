@@ -1,7 +1,1 @@
-module.exports = {
-  css: {
-    modules: true
-  },
-
-  runtimeCompiler: true
-};
+module.exports = {}

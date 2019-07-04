@@ -1,4 +1,4 @@
-# vue-shopinigs
+# shopvue
 
 ## Project setup
 ```

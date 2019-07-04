@@ -83,17 +83,6 @@ const routerLink = new Router({
         },
 
         {
-          path: "/reports",
-          name: "reports",
-          meta: {
-            title: "数据统计"
-          },
-          component: () => {
-            return import("./views/indexChild/reports.vue");
-          }
-        },
-
-        {
           path: "/params",
           name: "params",
           meta: {
@@ -101,6 +90,17 @@ const routerLink = new Router({
           },
           component: () => {
             return import("./views/indexChild/params.vue");
+          }
+        },
+
+        {
+          path: "/goods-add",
+          name: "goodsAdd",
+          meta: {
+            title: "添加商品"
+          },
+          component: () => {
+            return import("./views/indexChild/goodsAdd.vue");
           }
         }
       ]
